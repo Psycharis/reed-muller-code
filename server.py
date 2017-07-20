@@ -8,11 +8,17 @@ if __name__ == "__main__":
 
     while True:
 
-        r = int(raw_input("Give reed-muller's order: "))
-        m = int(raw_input("Give reed-muller's code length: "))
+        r = raw_input("Give reed-muller's order: ")
+        m = raw_input("Give reed-muller's code length: ")
 
-        if (m >= r and m >= 0 and r >= 0):
-            break
+        if(r is not '' and m is not ''):
+            if (m >= r and m >= 0 and r >= 0):
+                r = int(r)
+                m = int(m)
+                break
+            else:
+                print "Your input is invalid!"
+
         else:
             print "Your input is invalid!"
 
@@ -27,7 +33,7 @@ if __name__ == "__main__":
     encoded_w2s = [] # encoded words to send
 
     # create 20 random words
-    for i in range(0, 19):
+    for i in range(0, 20):
         pre_vector_array = [] # initialize empty array
 
         for i in range(0, RM.dimension()):
@@ -36,9 +42,9 @@ if __name__ == "__main__":
         w2s.append(vector(pre_vector_array)) # append array as vector in w2s
 
     # encode w2s
-    for i in range(0, 19):
+    for i in range(0, 20):
         encoded_w2s.append(w2s[i]*RM_MATRIX)
 
     # show results
-    for i in range(0, 19):
+    for i in range(0, 20):
         print str(w2s[i]) + " => " + str(encoded_w2s[i])
