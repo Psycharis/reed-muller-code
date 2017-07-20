@@ -12,13 +12,17 @@ if __name__ == "__main__":
         m = raw_input("Give reed-muller's code length: ")
 
         if(r is not '' and m is not ''):
-            if (m >= r and m >= 0 and r >= 0):
-                r = int(r)
-                m = int(m)
-                break
+
+            if(r.isdigit() and m.isdigit()):
+
+                if (m >= r and m >= 0 and r >= 0):
+                    r = int(r)
+                    m = int(m)
+                    break
+                else:
+                    print "Your input is invalid!"
             else:
                 print "Your input is invalid!"
-
         else:
             print "Your input is invalid!"
 
