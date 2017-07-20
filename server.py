@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     # check for dual RM code
     if((m-r-1) >= 0 and (m-r-1) <= m):
-        RM = codes.BinaryReedMullerCode(m-r-1, m) # initialize reed-muller code
+        RM = codes.BinaryReedMullerCode(m-r-1, m) # initialize dual reed-muller code
         print "** switching to dual reed-muller code"
     else:
         RM = codes.BinaryReedMullerCode(r, m) # initialize reed-muller code
