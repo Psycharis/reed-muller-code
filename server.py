@@ -26,7 +26,13 @@ if __name__ == "__main__":
         else:
             print "Your input is invalid!"
 
-    RM = codes.BinaryReedMullerCode(r, m) # initialize reed-muller code
+    # check for dual RM code
+    if((m-r-1) >= 0 and (m-r-1) <= m):
+        RM = codes.BinaryReedMullerCode(m-r-1, m) # initialize reed-muller code
+        print "** switching to dual reed-muller code"
+    else:
+        RM = codes.BinaryReedMullerCode(r, m) # initialize reed-muller code
+
     ENCODER = codes.encoders.ReedMullerVectorEncoder(RM) # initialize vector encoder
     RM_MATRIX = ENCODER.generator_matrix() # generate vector matrix
 
