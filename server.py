@@ -34,7 +34,6 @@ if __name__ == "__main__":
         RM = codes.BinaryReedMullerCode(r, m) # initialize reed-muller code
 
     ENCODER = codes.encoders.ReedMullerVectorEncoder(RM) # initialize vector encoder
-    RM_MATRIX = ENCODER.generator_matrix() # generate vector matrix
 
     print "** minimum distance: " + str(RM.minimum_distance())
     print "** number of variables: " + str(RM.number_of_variables())
@@ -53,7 +52,7 @@ if __name__ == "__main__":
 
     # encode w2s
     for i in range(0, 20):
-        encoded_w2s.append(w2s[i]*RM_MATRIX)
+        encoded_w2s.append(ENCODER.encode(w2s[i]))
 
     # show results
     for i in range(0, 20):
