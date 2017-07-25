@@ -1,59 +1,65 @@
-from random import randrange
+# Echo server program
+import socket
 
+import pickle
 from sage.all import *
 from sage.coding.reed_muller_code import BinaryReedMullerCode
 from sage.coding.reed_muller_code import ReedMullerVectorEncoder
+from sage.coding.linear_code import LinearCodeSyndromeDecoder
 
-if __name__ == "__main__":
+HOST = ''                 # Symbolic name meaning all available interfaces
+PORT = 50017              # Arbitrary non-privileged port
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((HOST, PORT))
+s.listen(1)
+conn, addr = s.accept()
+print 'Message by', addr
 
-    while True:
+while 1:
+    recvd_data = conn.recv(8192)
+    if not recvd_data: break
 
-        r = raw_input("Give reed-muller's order: ")
-        m = raw_input("Give reed-muller's code length: ")
+    data = pickle.loads(recvd_data)
 
-        if(r is not '' and m is not ''):
+    conn.sendall(recvd_data)
 
-            if(r.isdigit() and m.isdigit()):
+r = data[20] # 'r' order value
+m = data[21] # 'm' code lenght value
 
-                if (m >= r and m >= 0 and r >= 0):
-                    r = int(r)
-                    m = int(m)
-                    break
-                else:
-                    print "Your input is invalid!"
-            else:
-                print "Your input is invalid!"
-        else:
-            print "Your input is invalid!"
 
-    # check for dual RM code
-    if((m-r-1) >= 0 and (m-r-1) <= m):
-        RM = codes.BinaryReedMullerCode(m-r-1, m) # initialize dual reed-muller code
-        print "** switching to dual reed-muller code"
+RM = codes.BinaryReedMullerCode(r, m) # initialize reed-muller code
+RM2 = codes.decoders.LinearCodeNearestNeighborDecoder(RM)
+
+max_errors = RM2.decoding_radius() # maximal number of errors that can be decode.
+print data[0]
+try:
+
+    flag = true
+    check = 0
+    for i in range(0, 20):
+        word = RM.syndrome(data[i])
+        for y in range(0, len(word)):
+            if word[y]:
+                check += 1
+        if check > max_errors:
+            flag = false
+            print word
+            break
+        check = 0
+
+    unencode_w2s = []
+    print
+
+    if flag: # if message can be decode
+        print "The message is:"
+        for i in range(0, 20):
+            E2 = RM2.decode_to_message(data[i]) # decode the encoded message
+            unencode_w2s.append(E2)
+            print str(unencode_w2s[i])
     else:
-        RM = codes.BinaryReedMullerCode(r, m) # initialize reed-muller code
+        print "The code is not understandable due to errors"
+except:
+    print "The code is not understandable due to errors"
 
-    ENCODER = codes.encoders.ReedMullerVectorEncoder(RM) # initialize vector encoder
 
-    print "** minimum distance: " + str(RM.minimum_distance())
-    print "** number of variables: " + str(RM.number_of_variables())
-
-    w2s = [] # w2s = words to send
-    encoded_w2s = [] # encoded words to send
-
-    # create 20 random words
-    for i in range(0, 20):
-        pre_vector_array = [] # initialize empty array
-
-        for i in range(0, RM.dimension()):
-            pre_vector_array.append(randrange(0,2)) # create random bits in single array
-
-        w2s.append(vector(pre_vector_array)) # append array as vector in w2s
-
-    # encode w2s
-    for i in range(0, 20):
-        encoded_w2s.append(ENCODER.encode(w2s[i]))
-
-    # show results
-    for i in range(0, 20):
-        print str(w2s[i]) + " => " + str(encoded_w2s[i])
+conn.close()
