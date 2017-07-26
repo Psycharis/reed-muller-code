@@ -6,7 +6,7 @@ from sage.coding.reed_muller_code import BinaryReedMullerCode
 from sage.coding.reed_muller_code import ReedMullerVectorEncoder
 
 HOST = 'localhost'    # The remote host
-PORT = 50017              # The same port as used by the server
+PORT = 50217              # The same port as used by the server
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 
@@ -82,16 +82,12 @@ if __name__ == "__main__":
 
     Chan = channels.StaticErrorRateChannel(RM.ambient_space(), errw) # add errors
     random = randint(0, 19) # random number 0-20
-    print encoded_w2s[random]
+
     encoded_w2s[random] = Chan(encoded_w2s[random])
-    print encoded_w2s[random]
 
     data_string = pickle.dumps(encoded_w2s)
 
     s.send(data_string)
 
-    data = s.recv(8192)
-    data_arr = pickle.loads(data)
-
     s.close()
-    print 'Received'
+    print 'Message has been sent successfully'
