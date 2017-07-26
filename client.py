@@ -29,30 +29,28 @@ if __name__ == "__main__":
         else:
             print "Your input is invalid!"
 
+    RM = codes.BinaryReedMullerCode(r, m) # initialize reed-muller code
+
     while True:
 
-        RM = codes.BinaryReedMullerCode(r, m) # initialize reed-muller code
-        err = codes.decoders.LinearCodeNearestNeighborDecoder(RM)
-
-        max = RM.minimum_distance()
+        max = RM.minimum_distance() / 2
         errw = raw_input("Give error weight smaller than " + str(max) + ": ")
 
         if(errw is not '' and errw.isdigit()):
             errw = int(errw)
-            if(errw >= 0 and errw < 5000):
+            if(errw >= 0 and errw <= max):
                 break
             else:
                 print "Your input is invalid!"
         else:
             print "Your input is invalid!"
 
-   # if((m-r-1) >= 0 and (m-r-1) <= m):
-    #    r = m-r-1
-     #   print "** switching to dual reed-muller code"
+    if((m-r-1) >= 0 and (m-r-1) <= m):
+        r = m-r-1
+        print "** switching to dual reed-muller code"
 
 
     ENCODER = codes.encoders.ReedMullerVectorEncoder(RM) # initialize vector encoder
-    RM_MATRIX = ENCODER.generator_matrix() # generate vector matrix
 
     print "** minimum distance: " + str(RM.minimum_distance())
     print "** number of variables: " + str(RM.number_of_variables())
