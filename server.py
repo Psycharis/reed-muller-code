@@ -26,11 +26,13 @@ while 1:
 r = data[20] # 'r' order value
 m = data[21] # 'm' code lenght value
 
-
 RM = codes.BinaryReedMullerCode(r, m) # initialize reed-muller code
-RM2 = codes.decoders.LinearCodeNearestNeighborDecoder(RM)
 
-max_errors = RM2.decoding_radius() # maximal number of errors that can be decode.
+max_errors = min(RM.decoder().decoding_radius(), RM.minimum_distance()/2) - 1
+
+if max_errors < 0:
+    max_errors = 0
+
 dec = RM.decoder('Syndrome', maximum_error_weight = max_errors)
 
 unencode_w2s = []
@@ -45,5 +47,6 @@ for i in range(0, 20):
 
     unencode_w2s.append(E2)
     print str(E2)
+
 
 conn.close()
