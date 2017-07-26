@@ -28,17 +28,16 @@ if __name__ == "__main__":
 
         else:
             print "Your input is invalid!"
-            
-    # check for dual reed-muller code             
+
     if((m-r-1) >= 0 and (m-r-1) <= m):
         r = m-r-1
-        print "** switching to dual reed-muller code"        
+        print "** switching to dual reed-muller code"
 
     RM = codes.BinaryReedMullerCode(r, m) # initialize reed-muller code
+    max = RM.minimum_distance() / 2
 
     while True:
 
-        max = RM.minimum_distance() / 2
         errw = raw_input("Give error weight smaller than " + str(max) + ": ")
 
         if(errw is not '' and errw.isdigit()):
@@ -49,7 +48,6 @@ if __name__ == "__main__":
                 print "Your input is invalid!"
         else:
             print "Your input is invalid!"
-            
 
     ENCODER = codes.encoders.ReedMullerVectorEncoder(RM) # initialize vector encoder
 
