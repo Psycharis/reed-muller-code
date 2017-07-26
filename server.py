@@ -8,7 +8,7 @@ from sage.coding.reed_muller_code import ReedMullerVectorEncoder
 from sage.coding.linear_code import LinearCodeSyndromeDecoder
 
 HOST = ''                 # Symbolic name meaning all available interfaces
-PORT = 50017              # Arbitrary non-privileged port
+PORT = 50217              # Arbitrary non-privileged port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((HOST, PORT))
 s.listen(1)
@@ -16,7 +16,7 @@ conn, addr = s.accept()
 print 'Message by', addr
 
 while 1:
-    recvd_data = conn.recv(8192)
+    recvd_data = conn.recv(32768)
     if not recvd_data: break
 
     data = pickle.loads(recvd_data)
@@ -31,35 +31,19 @@ RM = codes.BinaryReedMullerCode(r, m) # initialize reed-muller code
 RM2 = codes.decoders.LinearCodeNearestNeighborDecoder(RM)
 
 max_errors = RM2.decoding_radius() # maximal number of errors that can be decode.
-print data[0]
-try:
+dec = RM.decoder('Syndrome', maximum_error_weight = max_errors)
 
-    flag = true
-    check = 0
-    for i in range(0, 20):
-        word = RM.syndrome(data[i])
-        for y in range(0, len(word)):
-            if word[y]:
-                check += 1
-        if check > max_errors:
-            flag = false
-            print word
-            break
-        check = 0
+unencode_w2s = []
 
-    unencode_w2s = []
-    print
+for i in range(0, 20):
 
-    if flag: # if message can be decode
-        print "The message is:"
-        for i in range(0, 20):
-            E2 = RM2.decode_to_message(data[i]) # decode the encoded message
-            unencode_w2s.append(E2)
-            print str(unencode_w2s[i])
-    else:
-        print "The code is not understandable due to errors"
-except:
-    print "The code is not understandable due to errors"
+    try:
+        E2 = dec.decode_to_message(data[i]) # decode the encoded message
+    except:
+        print "The word is not understandable due to errors"
+        continue
 
+    unencode_w2s.append(E2)
+    print str(E2)
 
 conn.close()
