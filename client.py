@@ -29,8 +29,7 @@ if __name__ == "__main__":
         else:
             print "Your input is invalid!"
             
-    # check for dual reed-muller code        
-            
+    # check for dual reed-muller code             
     if((m-r-1) >= 0 and (m-r-1) <= m):
         r = m-r-1
         print "** switching to dual reed-muller code"        
