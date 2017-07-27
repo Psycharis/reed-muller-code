@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     while True:
 
-        errw = raw_input("Give error weight smaller than " + str(max) + ": ")
+        errw = raw_input("Give error weight less or equal than " + str(max) + ": ")
 
         if(errw is not '' and errw.isdigit()):
             errw = int(errw)
